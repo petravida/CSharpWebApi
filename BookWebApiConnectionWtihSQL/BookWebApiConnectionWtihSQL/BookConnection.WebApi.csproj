@@ -305,6 +305,20 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookConnection.common\BookConnection.common.csproj">
+      <Project>{b8158dcc-8cdf-479f-9fc4-0eacffb31a1c}</Project>
+      <Name>BookConnection.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BookConnection.Model\BookConnection.Model.csproj">
+      <Project>{c1b0c838-6335-4594-ab50-a4ab340f54fa}</Project>
+      <Name>BookConnection.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BookConnection.Service\BookConnection.Service.csproj">
+      <Project>{706f9cec-65a5-4e17-ae16-fc9679e14eb9}</Project>
+      <Name>BookConnection.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
