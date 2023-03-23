@@ -244,10 +244,10 @@ namespace BookWebApiConnectionWtihSQL.Controllers
 
                     SqlCommand putCommand = new SqlCommand("UPDATE Book set title=@Title, [number of pages]=@NumberOfPages, genre=@Genre, author_id=@AuthorId where @Id = id", connection);
                     putCommand.Parameters.AddWithValue("@Id", id);
-                    putCommand.Parameters.AddWithValue("@Title", string.IsNullOrWhiteSpace(updateBook.Title) ? book.Title : updateBook.Title);
-                    putCommand.Parameters.AddWithValue("@NumberOfPages", string.IsNullOrWhiteSpace(updateBook.NumberOfPages.ToString()) ? book.NumberOfPages.ToString() : updateBook.NumberOfPages.ToString());
-                    putCommand.Parameters.AddWithValue("@Genre", string.IsNullOrWhiteSpace(updateBook.Genre) ? book.Genre : updateBook.Genre);
-                    putCommand.Parameters.AddWithValue("@AuthorId", book.AuthorId.ToString());
+                    putCommand.Parameters.AddWithValue("@Title", book.Title == default ? updateBook.Title : book.Title);
+                    putCommand.Parameters.AddWithValue("@NumberOfPages", book.NumberOfPages == default ? updateBook.NumberOfPages : book.NumberOfPages);
+                    putCommand.Parameters.AddWithValue("@Genre", book.Genre = default ? updateBook.Genre : book.Genre);
+                    putCommand.Parameters.AddWithValue("@AuthorId", book.AuthorId = default ? updateBook.AuthorId : book.AuthorId);
 
                     int numberOfAffectedRows = putCommand.ExecuteNonQuery();
                     connection.Close();
