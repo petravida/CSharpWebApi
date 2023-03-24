@@ -1,5 +1,6 @@
 ﻿using BookConnection.Model;
 using BookConnection.Service;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -10,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -23,19 +25,19 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
-        public HttpResponseMessage GetBooks()
+        public async Task<HttpResponseMessage> GetBooksAsync()
         {
             try
             {
                 BookService bookService = new BookService();
-                List<BookConnection.Model.BookModel> listOfBooks = bookService.GetBooks();
-                if (listOfBooks == null)
+                Task<List<BookModel>> listOfBooks = bookService.GetBooksAsync();
+                if (await listOfBooks == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
+                   return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, listOfBooks);
+                    return Request.CreateResponse(HttpStatusCode.OK, listOfBooks.Result);
                 }
             }
             catch (Exception ex)
@@ -45,20 +47,20 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         }
         [HttpGet]
         [Route("api/getBook/{id}")]
-        public HttpResponseMessage GetOneBook(Guid id)
+        public async Task<HttpResponseMessage> GetOneBookAsync(Guid id)
         {
             try
             {
                 BookService bookService = new BookService();
-                BookConnection.Model.BookModel book = bookService.GetOneBook(id);
+                Task<BookModel> book = bookService.GetOneBookAsync(id);
                 
-                if (book == null)
+                if (await book == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no Book with {id} Id.");
                 }
-                else
+                else 
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, book);
+                    return Request.CreateResponse(HttpStatusCode.OK, book.Result);
                 }
             }
             catch (Exception ex)
@@ -68,14 +70,14 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         }
         [HttpPost]
         [Route("api/Book/postBook")]
-        public HttpResponseMessage PostOneBook([FromBody] BookModel newBook)
+        public async Task<HttpResponseMessage> PostOneBookAsync([FromBody] BookModel newBook)
         {
             try
             {
                 BookService bookService = new BookService();
-                bool isInserted = bookService.PostOneBook(newBook);
+                Task<bool> isInserted = bookService.PostOneBookAsync(newBook);
 
-                if (isInserted == true)
+                if (await isInserted == true)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, newBook);
                 }
@@ -93,21 +95,21 @@ namespace BookWebApiConnectionWtihSQL.Controllers
 
         [HttpDelete]
         [Route("api/Book/deleteBook/{id}")]
-        public HttpResponseMessage DeleteBook(Guid id)
+        public async Task<HttpResponseMessage> DeleteBookAsync(Guid id)
         {
             try
             {
                 BookService bookService = new BookService();
-                bool isDeleted = bookService.DeleteBook(id);
+                Task<bool> isDeleted = bookService.DeleteBookAsync(id);
 
-                if (isDeleted == false)
+                if (await isDeleted == false)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no book with {id} Id");
                 }
                 else
                 {
                     
-                    return Request.CreateResponse(HttpStatusCode.OK, "Book has been deleted.");
+                   return Request.CreateResponse(HttpStatusCode.OK, "Book has been deleted.");
                 }
             }
             catch (Exception ex)
@@ -118,14 +120,14 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         }
         [HttpPut]
         [Route("api/Book/putOneBook/{id}")]
-        public HttpResponseMessage PutBook(Guid id, BookModel updateBook)
+        public async Task<HttpResponseMessage> PutBookAsync(Guid id, BookModel updateBook)
         {
             try
             {
                 BookService bookService = new BookService();
-                bool isUpdated = bookService.PutBook(id, updateBook);
+                Task<bool> isUpdated = bookService.PutBookAsync(id, updateBook);
 
-                if (isUpdated == false)
+                if (await isUpdated == false)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no book with {id} Id");
                 }

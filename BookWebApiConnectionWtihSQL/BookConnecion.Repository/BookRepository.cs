@@ -16,13 +16,13 @@ namespace BookConnecion.Repository
     {
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
-        public List<BookModel> GetBooks()
+        public async Task<List<BookModel>> GetBooksAsync()
         {
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand getAll = new SqlCommand("SELECT * FROM Book", connection);
             List<BookModel> books = new List<BookModel>();
             connection.Open();
-            SqlDataReader allreader = getAll.ExecuteReader();
+            SqlDataReader allreader = await getAll.ExecuteReaderAsync();
             if (allreader.HasRows)
             {
                 while (allreader.Read())
@@ -40,7 +40,7 @@ namespace BookConnecion.Repository
             return books;
         }
 
-        public BookModel GetOneBook(Guid id)
+        public async Task<BookModel> GetOneBookAsync(Guid id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -48,7 +48,7 @@ namespace BookConnecion.Repository
                 SqlCommand getBook = new SqlCommand("SELECT * FROM Book WHERE @Id = id", connection);
                 getBook.Parameters.AddWithValue("@Id", id);
                 connection.Open();
-                SqlDataReader getReader = getBook.ExecuteReader();
+                SqlDataReader getReader = await getBook.ExecuteReaderAsync();
                 BookModel findBook = new BookModel();
 
                 if (getReader.HasRows)
@@ -74,7 +74,7 @@ namespace BookConnecion.Repository
 
             }
         }
-        public bool PostOneBook(BookModel newBook)
+        public async Task<bool> PostOneBookAsync(BookModel newBook)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -87,7 +87,7 @@ namespace BookConnecion.Repository
                 commandInsert.Parameters.AddWithValue("@Genre", newBook.Genre);
                 commandInsert.Parameters.AddWithValue("@Author_Id", newBook.AuthorId);
                 connection.Open();
-                int numberOfRows = commandInsert.ExecuteNonQuery();
+                int numberOfRows = await commandInsert.ExecuteNonQueryAsync();
                 connection.Close();
 
                 if (numberOfRows > 0)
@@ -101,7 +101,7 @@ namespace BookConnecion.Repository
             }
 
         }
-        public bool DeleteBook(Guid id)
+        public async Task<bool> DeleteBookAsync(Guid id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -110,7 +110,7 @@ namespace BookConnecion.Repository
                 SqlCommand deleteCommand = new SqlCommand("DELETE FROM Book WHERE @Id = id", connection);
                 deleteCommand.Parameters.AddWithValue("@Id", id);
                 connection.Open();
-                int numberOfRows = deleteCommand.ExecuteNonQuery();
+                int numberOfRows = await deleteCommand.ExecuteNonQueryAsync();
                 connection.Close();
                 if (numberOfRows > 0)
                 {
@@ -122,7 +122,7 @@ namespace BookConnecion.Repository
                 }
             }
         }
-        public bool PutBook(Guid id, BookModel updateBook)
+        public async Task<bool> PutBookAsync(Guid id, BookModel updateBook)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             
@@ -138,7 +138,7 @@ namespace BookConnecion.Repository
                 putCommand.Parameters.AddWithValue("@AuthorId", updateBook.AuthorId);
                 putCommand.Connection.Open();
                 
-                int numberOfAffectedRows = putCommand.ExecuteNonQuery();
+                int numberOfAffectedRows = await putCommand.ExecuteNonQueryAsync();
                if (numberOfAffectedRows > 0)
                 {
                     return true;

@@ -13,52 +13,54 @@ namespace BookConnection.Service
     public class BookService 
     {
        
-        public List<BookModel> GetBooks()
+        public async Task<List<BookModel>> GetBooksAsync()
         {
             BookRepository bookRep = new BookRepository();
-            List<BookModel> books = bookRep.GetBooks();
-            return books;
+            Task<List<BookModel>> books = bookRep.GetBooksAsync();
+            return await books;
         }
         //public bool Save(BookModel book)
         //{
         //    return true;
         //}
         
-        public BookModel GetOneBook(Guid id)
+        public async Task<BookModel> GetOneBookAsync(Guid id)
         {
             BookRepository getOneBook = new BookRepository();
-            BookModel oneBook = getOneBook.GetOneBook(id);
-            return oneBook;
+            Task<BookModel> oneBook = getOneBook.GetOneBookAsync(id);
+            return await oneBook;
         }
-        public bool PostOneBook(BookModel newBook)
+        public async Task<bool> PostOneBookAsync(BookModel newBook)
         {
             BookRepository postBook = new BookRepository();
-            bool isInserted = postBook.PostOneBook(newBook);
-            return isInserted;
+            Task<bool> isInserted = postBook.PostOneBookAsync(newBook);
+            return await isInserted;
         }
-        public bool DeleteBook(Guid id)
+        public async Task<bool> DeleteBookAsync(Guid id)
         {
             BookRepository goneBook = new BookRepository();
-            bool isDeleted = goneBook.DeleteBook(id);
-            return isDeleted;
+            Task<bool> isDeleted = goneBook.DeleteBookAsync(id);
+            return await isDeleted;
         }
-        public bool PutBook(Guid id, BookModel updateBook)
+        public async Task<bool> PutBookAsync(Guid id, BookModel updateBook)
         {
-            BookModel findBook = GetOneBook(id);
+            BookModel findBook = await GetOneBookAsync(id);
 
-            if (findBook == null)
+            if ( findBook == null)
             {
-                return false;
+             
+               return false;
             }
-            BookModel bookForUpdate = new BookModel();
+            
+           BookModel bookForUpdate = new BookModel();
             bookForUpdate.Title = updateBook.Title == default ? findBook.Title : updateBook.Title;
-            bookForUpdate.NumberOfPages = updateBook.NumberOfPages == default ? findBook.NumberOfPages : updateBook.NumberOfPages;
+           bookForUpdate.NumberOfPages = updateBook.NumberOfPages == default ? findBook.NumberOfPages : updateBook.NumberOfPages;
             bookForUpdate.Genre = updateBook.Genre == default ? findBook.Genre : updateBook.Genre;
-            bookForUpdate.AuthorId = updateBook.AuthorId == default ? findBook.AuthorId : updateBook.AuthorId;
+          bookForUpdate.AuthorId = updateBook.AuthorId == default ? findBook.AuthorId : updateBook.AuthorId;
             BookRepository differentBook = new BookRepository();
 
-            bool isEdited = differentBook.PutBook(id, bookForUpdate);
-            return isEdited;
+            Task<bool> isEdited = differentBook.PutBookAsync(id, bookForUpdate);
+            return await isEdited;
         }
 
 
