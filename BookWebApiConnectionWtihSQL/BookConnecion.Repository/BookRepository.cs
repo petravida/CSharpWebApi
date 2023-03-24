@@ -15,7 +15,7 @@ namespace BookConnecion.Repository
     public class BookRepository : IBookRepositoryCommon
     {
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
-        
+
         public List<BookModel> GetBooks()
         {
             SqlConnection connection = new SqlConnection(connectionString);
@@ -39,7 +39,7 @@ namespace BookConnecion.Repository
             }
             return books;
         }
-        
+
         public BookModel GetOneBook(Guid id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
@@ -62,7 +62,7 @@ namespace BookConnecion.Repository
                         findBook.NumberOfPages = getReader.GetInt32(2);
                         findBook.Genre = getReader.IsDBNull(3) ? null : getReader.GetString(3);
                         findBook.AuthorId = getReader.GetGuid(4);
-      
+
                     }
                     getReader.Close();
                     return findBook;
@@ -74,15 +74,14 @@ namespace BookConnecion.Repository
 
             }
         }
-        public bool Post(BookModel newBook)
+        public bool PostOneBook(BookModel newBook)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
             {
-
+                newBook.Id = Guid.NewGuid();
                 SqlCommand commandInsert = new SqlCommand("INSERT INTO Book VALUES (@Id, @Title, @NumberOfPages, @Genre, @Author_Id)", connection);
-
-                commandInsert.Parameters.AddWithValue("@Id", Guid.NewGuid());
+                commandInsert.Parameters.AddWithValue("@Id", newBook.Id);
                 commandInsert.Parameters.AddWithValue("@Title", newBook.Title);
                 commandInsert.Parameters.AddWithValue("@NumberOfPages", newBook.NumberOfPages);
                 commandInsert.Parameters.AddWithValue("@Genre", newBook.Genre);
@@ -123,33 +122,35 @@ namespace BookConnecion.Repository
                 }
             }
         }
-        //public bool Put(Guid id, BookModel updateBook)
-        //{
-        //    SqlConnection connection = new SqlConnection(connectionString);
-           
-        //    using (connection)
-        //    {
-        //        BookModel nowBook = new BookModel();
-        //        nowBook.Id = id;
-        //        updateBook.Id = id;
-        //        SqlCommand putCommand = new SqlCommand("UPDATE Book set title=@Title, [number of pages]=@NumberOfPages, genre=@Genre, author_id=@AuthorId where @Id = id", connection);
-        //        putCommand.Parameters.AddWithValue("@Id", id);
-        //        putCommand.Parameters.AddWithValue("@Title", nowBook.Title == default ? updateBook.Title : nowBook.Title);
-        //        putCommand.Parameters.AddWithValue("@NumberOfPages", nowBook.NumberOfPages == default ? updateBook.NumberOfPages : nowBook.NumberOfPages);
-        //        putCommand.Parameters.AddWithValue("@Genre", nowBook.Genre = default ? updateBook.Genre : nowBook.Genre);
-        //        putCommand.Parameters.AddWithValue("@AuthorId", nowBook.AuthorId = default ? updateBook.AuthorId : nowBook.AuthorId);
-        //        connection.Open();
-        //        int numberOfAffectedRows = putCommand.ExecuteNonQuery();
-        //        connection.Close();
-        //        if (numberOfAffectedRows > 0)
-        //        {
-        //            return true;
-        //        }
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
+        public bool PutBook(Guid id, BookModel updateBook)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            
+            using (connection)
+            {
+                
+                SqlCommand putCommand = new SqlCommand("UPDATE Book set title=@Title, [number of pages]=@NumberOfPages, genre=@Genre, author_id=@AuthorId where @Id = id", connection);
 
-        }  // }
+                putCommand.Parameters.AddWithValue("@Id", id);
+                putCommand.Parameters.AddWithValue("@Title", updateBook.Title);
+                putCommand.Parameters.AddWithValue("@NumberOfPages", updateBook.NumberOfPages);
+                putCommand.Parameters.AddWithValue("@Genre", updateBook.Genre);
+                putCommand.Parameters.AddWithValue("@AuthorId", updateBook.AuthorId);
+                putCommand.Connection.Open();
+                
+                int numberOfAffectedRows = putCommand.ExecuteNonQuery();
+               if (numberOfAffectedRows > 0)
+                {
+                    return true;
+                }
+
+                putCommand.Connection.Close();
+                return false;
+
+            }
+
+
+
+        }
+    }
 }

@@ -23,12 +23,12 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
-        public HttpResponseMessage GetAll()
+        public HttpResponseMessage GetBooks()
         {
             try
             {
                 BookService bookService = new BookService();
-                List<BookConnection.Model.BookModel> listOfBooks = bookService.Get();
+                List<BookConnection.Model.BookModel> listOfBooks = bookService.GetBooks();
                 if (listOfBooks == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
@@ -50,7 +50,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 BookService bookService = new BookService();
-                var book = bookService.GetOneBook(id);
+                BookConnection.Model.BookModel book = bookService.GetOneBook(id);
                 
                 if (book == null)
                 {
@@ -73,12 +73,11 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 BookService bookService = new BookService();
-                var isInserted = bookService.PostBook(newBook);
+                bool isInserted = bookService.PostOneBook(newBook);
 
-                //BookConnection.Model.Book addedbook = bookService.PostBook(newBook);
                 if (isInserted == true)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, "Uspjesno");
+                    return Request.CreateResponse(HttpStatusCode.OK, newBook);
                 }
                 else
                 {
@@ -94,12 +93,12 @@ namespace BookWebApiConnectionWtihSQL.Controllers
 
         [HttpDelete]
         [Route("api/Book/deleteBook/{id}")]
-        public HttpResponseMessage DeleteOneBook(Guid id)
+        public HttpResponseMessage DeleteBook(Guid id)
         {
             try
             {
                 BookService bookService = new BookService();
-                var isDeleted = bookService.DeleteBook(id);
+                bool isDeleted = bookService.DeleteBook(id);
 
                 if (isDeleted == false)
                 {
@@ -117,30 +116,28 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             }
 
         }
-        //[HttpPut]
-        //[Route("api/Book/putBook/{id}")]
-        //public HttpResponseMessage PutBook([FromUri] Guid id, [FromBody] BookModel updateBook)
-        //{
-        //    try
-        //    {
-        //        BookService bookService = new BookService();
-        //        var isDeleted = bookService.PutBook(id);
+        [HttpPut]
+        [Route("api/Book/putOneBook/{id}")]
+        public HttpResponseMessage PutBook(Guid id, BookModel updateBook)
+        {
+            try
+            {
+                BookService bookService = new BookService();
+                bool isUpdated = bookService.PutBook(id, updateBook);
 
-        //        if (isDeleted == false)
-        //        {
-        //            return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no book with {id} Id");
-        //        }
-        //        else
-        //        {
+                if (isUpdated == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no book with {id} Id");
+                }
+        
+                  return Request.CreateResponse(HttpStatusCode.OK, "Book is updated.");
 
-        //            return Request.CreateResponse(HttpStatusCode.OK, "Book has been deleted.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
+        }
 
 
 
