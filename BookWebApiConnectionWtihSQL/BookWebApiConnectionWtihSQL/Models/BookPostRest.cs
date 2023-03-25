@@ -1,17 +1,16 @@
-﻿using BookConnection.Model.common;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
+using System.Web;
 
-namespace BookConnection.Model
+namespace BookWebApiConnectionWtihSQL.Models
 {
-    public class BookModel : IBookModelCommon
+    public class BookPostRest
     {
         private string genre;
 
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public int NumberOfPages { get; set; }
         public string Genre { get => genre; set => genre = value; }

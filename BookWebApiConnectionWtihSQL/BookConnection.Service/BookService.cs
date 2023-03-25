@@ -1,5 +1,6 @@
 ﻿using BookConnecion.Repository;
 using BookConnection.Model;
+using BookConnection.Service.common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace BookConnection.Service
+namespace BookConnection.Service 
 {
-    public class BookService 
+    public class BookService : IBookService
     {
-       
         public async Task<List<BookModel>> GetBooksAsync()
         {
             BookRepository bookRep = new BookRepository();
@@ -23,17 +23,16 @@ namespace BookConnection.Service
         //{
         //    return true;
         //}
-        
         public async Task<BookModel> GetOneBookAsync(Guid id)
         {
             BookRepository getOneBook = new BookRepository();
             Task<BookModel> oneBook = getOneBook.GetOneBookAsync(id);
             return await oneBook;
         }
-        public async Task<bool> PostOneBookAsync(BookModel newBook)
+        public async Task<bool> PostOneBookAsync(BookModel book)
         {
             BookRepository postBook = new BookRepository();
-            Task<bool> isInserted = postBook.PostOneBookAsync(newBook);
+            Task<bool> isInserted = postBook.PostOneBookAsync(book);
             return await isInserted;
         }
         public async Task<bool> DeleteBookAsync(Guid id)
@@ -42,7 +41,7 @@ namespace BookConnection.Service
             Task<bool> isDeleted = goneBook.DeleteBookAsync(id);
             return await isDeleted;
         }
-        public async Task<bool> PutBookAsync(Guid id, BookModel updateBook)
+        public async Task<bool> PutBookAsync(Guid id, BookModel book)
         {
             BookModel findBook = await GetOneBookAsync(id);
 
@@ -53,10 +52,10 @@ namespace BookConnection.Service
             }
             
            BookModel bookForUpdate = new BookModel();
-            bookForUpdate.Title = updateBook.Title == default ? findBook.Title : updateBook.Title;
-           bookForUpdate.NumberOfPages = updateBook.NumberOfPages == default ? findBook.NumberOfPages : updateBook.NumberOfPages;
-            bookForUpdate.Genre = updateBook.Genre == default ? findBook.Genre : updateBook.Genre;
-          bookForUpdate.AuthorId = updateBook.AuthorId == default ? findBook.AuthorId : updateBook.AuthorId;
+            bookForUpdate.Title = book.Title == default ? findBook.Title : book.Title;
+           bookForUpdate.NumberOfPages = book.NumberOfPages == default ? findBook.NumberOfPages : book.NumberOfPages;
+            bookForUpdate.Genre = book.Genre == default ? findBook.Genre : book.Genre;
+            bookForUpdate.AuthorId = book.AuthorId == default ? findBook.AuthorId : book.AuthorId;
             BookRepository differentBook = new BookRepository();
 
             Task<bool> isEdited = differentBook.PutBookAsync(id, bookForUpdate);

@@ -1,8 +1,10 @@
 ﻿using BookConnection.Model;
 using BookConnection.Service;
+using BookWebApiConnectionWtihSQL.Models;
 using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
@@ -30,15 +32,32 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 BookService bookService = new BookService();
-                Task<List<BookModel>> listOfBooks = bookService.GetBooksAsync();
-                if (await listOfBooks == null)
+                List<BookModel> listOfBooks = await bookService.GetBooksAsync();
+                List<BookGetRest> bookRestList = new List<BookGetRest>();
+                if ( listOfBooks == null)
                 {
-                   return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
+                    return  Request.CreateResponse(HttpStatusCode.NotFound);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, listOfBooks.Result);
+                    foreach (BookModel book in listOfBooks) 
+                    { 
+                        BookGetRest bookRest = new BookGetRest();
+                        bookRest.Title = book.Title;
+                        bookRest.NumberOfPages = book.NumberOfPages;
+                        bookRest.Genre = book.Genre;
+                        bookRestList.Add(bookRest);
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, bookRestList);   
                 }
+                //if (await listOfBooks == null)
+                //{
+                //   return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
+                //}
+                //else
+                //{
+                //    return Request.CreateResponse(HttpStatusCode.OK, listOfBooks.Result);
+                //}
             }
             catch (Exception ex)
             {
@@ -52,15 +71,18 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 BookService bookService = new BookService();
-                Task<BookModel> book = bookService.GetOneBookAsync(id);
-                
-                if (await book == null)
+                BookModel getBook = await bookService.GetOneBookAsync(id);
+                if ( getBook == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no Book with {id} Id.");
                 }
                 else 
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, book.Result);
+                    BookGetRest bookRest = new BookGetRest();
+                    bookRest.Title = getBook.Title;
+                    bookRest.NumberOfPages = getBook.NumberOfPages;
+                    bookRest.Genre = getBook.Genre;
+                    return Request.CreateResponse(HttpStatusCode.OK, bookRest);
                 }
             }
             catch (Exception ex)
@@ -69,17 +91,22 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             }
         }
         [HttpPost]
-        [Route("api/Book/postBook")]
-        public async Task<HttpResponseMessage> PostOneBookAsync([FromBody] BookModel newBook)
+        [Route("api/postBook")]
+        public async Task<HttpResponseMessage> PostOneBookAsync(BookPostRest bookPost)
         {
             try
             {
                 BookService bookService = new BookService();
-                Task<bool> isInserted = bookService.PostOneBookAsync(newBook);
-
-                if (await isInserted == true)
+                BookModel insertedBook = new BookModel();
+                insertedBook.Title = bookPost.Title;
+                insertedBook.NumberOfPages = bookPost.NumberOfPages;
+                insertedBook.Genre = bookPost.Genre;
+                insertedBook.AuthorId = bookPost.AuthorId;
+                insertedBook.TypeOfLiterature = bookPost.TypeOfLiterature;
+                bool isInserted = await bookService.PostOneBookAsync(insertedBook);
+                if ( isInserted == true)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, newBook);
+                    return Request.CreateResponse(HttpStatusCode.OK, insertedBook);
                 }
                 else
                 {
@@ -93,8 +120,8 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/Book/deleteBook/{id}")]
+        [HttpDelete]  
+        [Route("api/deleteBook/{id}")]
         public async Task<HttpResponseMessage> DeleteBookAsync(Guid id)
         {
             try
@@ -119,15 +146,19 @@ namespace BookWebApiConnectionWtihSQL.Controllers
 
         }
         [HttpPut]
-        [Route("api/Book/putOneBook/{id}")]
-        public async Task<HttpResponseMessage> PutBookAsync(Guid id, BookModel updateBook)
+        [Route("api/putBook/{id}")]
+        public async Task<HttpResponseMessage> PutBookAsync(Guid id, BookPutRest bookPut)
         {
             try
             {
+                BookModel editBook = new BookModel();
+                editBook.Title = bookPut.Title;
+                editBook.NumberOfPages = bookPut.NumberOfPages;
+                editBook.Genre = bookPut.Genre;
                 BookService bookService = new BookService();
-                Task<bool> isUpdated = bookService.PutBookAsync(id, updateBook);
+                bool isUpdated = await bookService.PutBookAsync(id, editBook);
 
-                if (await isUpdated == false)
+                if ( isUpdated == false)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no book with {id} Id");
                 }
@@ -140,11 +171,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
-
-
-
-
-
+       
 
     }
 

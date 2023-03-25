@@ -44,5 +44,11 @@
     <Compile Include="IBookRepositoryCommon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookConnection.Model\BookConnection.Model.csproj">
+      <Project>{C1B0C838-6335-4594-AB50-A4AB340F54FA}</Project>
+      <Name>BookConnection.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
