@@ -12,8 +12,12 @@ using BookConnection.Model;
 
 namespace BookConnecion.Repository 
 {
-    public class BookRepository : IBookRepositoryCommon
+    public class BookRepository : IBookRepository
     {
+        public BookRepository()
+        {
+
+        }
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
         public async Task<List<BookModel>> GetBooksAsync()

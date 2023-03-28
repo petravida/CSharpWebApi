@@ -1,5 +1,6 @@
 ﻿using BookConnecion.Repository;
 using BookConnection.Model;
+using BookConnection.Repository.common;
 using BookConnection.Service.common;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,21 @@ namespace BookConnection.Service
 {
     public class BookService : IBookService
     {
+        protected IBookRepository Repository { get; set; }
+
+        public BookService(IBookRepository repository)
+        {
+            Repository = repository;
+        }
+
+    
+        
+
         public async Task<List<BookModel>> GetBooksAsync()
         {
-            BookRepository bookRep = new BookRepository();
-            Task<List<BookModel>> books = bookRep.GetBooksAsync();
+            //BookRepository bookRep = new BookRepository();
+            Task<List<BookModel>> books = Repository.GetBooksAsync();
+
             return await books;
         }
         //public bool Save(BookModel book)
@@ -25,20 +37,20 @@ namespace BookConnection.Service
         //}
         public async Task<BookModel> GetOneBookAsync(Guid id)
         {
-            BookRepository getOneBook = new BookRepository();
-            Task<BookModel> oneBook = getOneBook.GetOneBookAsync(id);
+            //BookRepository getOneBook = new BookRepository();
+            Task<BookModel> oneBook = Repository.GetOneBookAsync(id);
             return await oneBook;
         }
         public async Task<bool> PostOneBookAsync(BookModel book)
         {
-            BookRepository postBook = new BookRepository();
-            Task<bool> isInserted = postBook.PostOneBookAsync(book);
+            //BookRepository postBook = new BookRepository();
+            Task<bool> isInserted = Repository.PostOneBookAsync(book);
             return await isInserted;
         }
         public async Task<bool> DeleteBookAsync(Guid id)
         {
-            BookRepository goneBook = new BookRepository();
-            Task<bool> isDeleted = goneBook.DeleteBookAsync(id);
+            //BookRepository goneBook = new BookRepository();
+            Task<bool> isDeleted = Repository.DeleteBookAsync(id);
             return await isDeleted;
         }
         public async Task<bool> PutBookAsync(Guid id, BookModel book)
@@ -56,9 +68,9 @@ namespace BookConnection.Service
            bookForUpdate.NumberOfPages = book.NumberOfPages == default ? findBook.NumberOfPages : book.NumberOfPages;
             bookForUpdate.Genre = book.Genre == default ? findBook.Genre : book.Genre;
             bookForUpdate.AuthorId = book.AuthorId == default ? findBook.AuthorId : book.AuthorId;
-            BookRepository differentBook = new BookRepository();
+            //BookRepository differentBook = new BookRepository();
 
-            Task<bool> isEdited = differentBook.PutBookAsync(id, bookForUpdate);
+            Task<bool> isEdited = Repository.PutBookAsync(id, bookForUpdate);
             return await isEdited;
         }
 

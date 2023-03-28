@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookConnection.Model
 {
-    public class BookModel : IBookModelCommon
+    public class BookModel : IBookModel
     {
         private string genre;
 

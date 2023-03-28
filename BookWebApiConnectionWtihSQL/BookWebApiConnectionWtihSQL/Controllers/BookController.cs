@@ -1,5 +1,7 @@
 ﻿using BookConnection.Model;
+using BookConnection.Repository.common;
 using BookConnection.Service;
+using BookConnection.Service.common;
 using BookWebApiConnectionWtihSQL.Models;
 using Microsoft.Ajax.Utilities;
 using System;
@@ -20,10 +22,17 @@ using System.Xml;
 
 namespace BookWebApiConnectionWtihSQL.Controllers
 {
-   
+
 
     public class BookController : ApiController
     {
+        protected IBookService Service { get; set; }
+
+        public BookController(IBookService service)
+        {
+            Service = service;
+        }
+
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
@@ -31,8 +40,8 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         {
             try
             {
-                BookService bookService = new BookService();
-                List<BookModel> listOfBooks = await bookService.GetBooksAsync();
+                //BookService bookService = new BookService();
+                List<BookModel> listOfBooks = await Service.GetBooksAsync();
                 List<BookGetRest> bookRestList = new List<BookGetRest>();
                 if ( listOfBooks == null)
                 {
@@ -70,8 +79,8 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         {
             try
             {
-                BookService bookService = new BookService();
-                BookModel getBook = await bookService.GetOneBookAsync(id);
+                //BookService bookService = new BookService();
+                BookModel getBook = await Service.GetOneBookAsync(id);
                 if ( getBook == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no Book with {id} Id.");
@@ -96,14 +105,14 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         {
             try
             {
-                BookService bookService = new BookService();
+                //BookService bookService = new BookService();
                 BookModel insertedBook = new BookModel();
                 insertedBook.Title = bookPost.Title;
                 insertedBook.NumberOfPages = bookPost.NumberOfPages;
                 insertedBook.Genre = bookPost.Genre;
                 insertedBook.AuthorId = bookPost.AuthorId;
                 insertedBook.TypeOfLiterature = bookPost.TypeOfLiterature;
-                bool isInserted = await bookService.PostOneBookAsync(insertedBook);
+                bool isInserted = await Service.PostOneBookAsync(insertedBook);
                 if ( isInserted == true)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, insertedBook);
@@ -126,8 +135,8 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         {
             try
             {
-                BookService bookService = new BookService();
-                Task<bool> isDeleted = bookService.DeleteBookAsync(id);
+                //BookService bookService = new BookService();
+                Task<bool> isDeleted = Service.DeleteBookAsync(id);
 
                 if (await isDeleted == false)
                 {
@@ -155,8 +164,8 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 editBook.Title = bookPut.Title;
                 editBook.NumberOfPages = bookPut.NumberOfPages;
                 editBook.Genre = bookPut.Genre;
-                BookService bookService = new BookService();
-                bool isUpdated = await bookService.PutBookAsync(id, editBook);
+                //BookService bookService = new BookService();
+                bool isUpdated = await Service.PutBookAsync(id, editBook);
 
                 if ( isUpdated == false)
                 {

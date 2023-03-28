@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookConnection.Repository.common
 {
-    public interface IBookRepositoryCommon
+    public interface IBookRepository
     {
         Task<List<BookModel>> GetBooksAsync();
         Task<BookModel> GetOneBookAsync(Guid id);

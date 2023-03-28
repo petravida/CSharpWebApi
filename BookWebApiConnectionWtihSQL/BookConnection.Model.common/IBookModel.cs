@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookConnection.Model.common
 {
-    public interface IBookModelCommon 
+    public interface IBookModel 
     {
         Guid Id { get; set; }
         string Title { get; set; }
