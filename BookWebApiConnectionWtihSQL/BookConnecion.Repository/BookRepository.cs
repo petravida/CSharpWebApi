@@ -23,7 +23,9 @@ namespace BookConnecion.Repository
         }
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
+        //public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
         public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
+
         {
             StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book ");
             SqlConnection connection = new SqlConnection(connectionString);
@@ -31,12 +33,12 @@ namespace BookConnecion.Repository
             List<BookModel> books = new List<BookModel>();
             if (sorting != null)
             {
-                stringBuilder.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder}");
+                stringBuilder.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
                 getAll.Parameters.AddWithValue(sorting.SortBy, sorting.SortOrder);
             }
             else
             {
-                stringBuilder.Append($"ORDER BY Id");
+                stringBuilder.Append($"ORDER BY Id ");
             }
 
             if (pagination != null)

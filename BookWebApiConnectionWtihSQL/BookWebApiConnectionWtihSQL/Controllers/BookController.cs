@@ -16,8 +16,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 
@@ -37,28 +39,40 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
-        public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
+        //public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
+        public async Task<HttpResponseMessage> GetBooksAsync(int pageNumber, int pageSize, string sortBy, string sortOrder)
         {
             try
             {
+                Pagination pagination = new Pagination
+                {
+                    PageNumber = pageNumber,    
+                    PageSize = pageSize
+                };
+
+                Sorting sorting = new Sorting
+                {
+                    SortBy = sortBy,
+                    SortOrder = sortOrder
+                };
                 //BookService bookService = new BookService();
-                
+
                 List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting);
                 List<BookGetRest> bookRestList = new List<BookGetRest>();
-                Pagination newPagination = new Pagination();
-                {
-                    newPagination = pagination;
-                    pagination.PageSize = newPagination.PageSize;
-                    pagination.PageNumber = newPagination.PageNumber;
+                //Pagination newPagination = new Pagination();
+                //{
+                //    newPagination = pagination;
+                //    pagination.PageSize = newPagination.PageSize;
+                //    pagination.PageNumber = newPagination.PageNumber;
 
-                }
-                Sorting newsorting = new Sorting();
-                {
-                    newsorting = sorting;
-                    sorting.SortBy = newsorting.SortBy;
-                    sorting.SortOrder = newsorting.SortOrder;
+                //}
+                //Sorting newsorting = new Sorting();
+                //{
+                //    newsorting = sorting;
+                //    sorting.SortBy = newsorting.SortBy;
+                //    sorting.SortOrder = newsorting.SortOrder;
 
-                }
+                //}
 
                 if ( listOfBooks == null)
                 {
@@ -67,11 +81,13 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 else
                 {
                     foreach (BookModel book in listOfBooks) 
-                    { 
-                        BookGetRest bookRest = new BookGetRest();
-                        bookRest.Title = book.Title;
-                        bookRest.NumberOfPages = book.NumberOfPages;
-                        bookRest.Genre = book.Genre;
+                    {
+                        BookGetRest bookRest = new BookGetRest
+                        {
+                            Title = book.Title,
+                            NumberOfPages = book.NumberOfPages,
+                            Genre = book.Genre
+                        };
                         bookRestList.Add(bookRest);
 
                     }
