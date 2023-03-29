@@ -1,4 +1,5 @@
-﻿using BookConnection.Model;
+﻿using BookConnection.common;
+using BookConnection.Model;
 using BookConnection.Repository.common;
 using BookConnection.Service;
 using BookConnection.Service.common;
@@ -36,13 +37,29 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
-        public async Task<HttpResponseMessage> GetBooksAsync()
+        public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
         {
             try
             {
                 //BookService bookService = new BookService();
-                List<BookModel> listOfBooks = await Service.GetBooksAsync();
+                
+                List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting);
                 List<BookGetRest> bookRestList = new List<BookGetRest>();
+                Pagination newPagination = new Pagination();
+                {
+                    newPagination = pagination;
+                    pagination.PageSize = newPagination.PageSize;
+                    pagination.PageNumber = newPagination.PageNumber;
+
+                }
+                Sorting newsorting = new Sorting();
+                {
+                    newsorting = sorting;
+                    sorting.SortBy = newsorting.SortBy;
+                    sorting.SortOrder = newsorting.SortOrder;
+
+                }
+
                 if ( listOfBooks == null)
                 {
                     return  Request.CreateResponse(HttpStatusCode.NotFound);
@@ -56,17 +73,11 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                         bookRest.NumberOfPages = book.NumberOfPages;
                         bookRest.Genre = book.Genre;
                         bookRestList.Add(bookRest);
+
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, bookRestList);   
                 }
-                //if (await listOfBooks == null)
-                //{
-                //   return Request.CreateErrorResponse(HttpStatusCode.NotFound, "There is no Books.");
-                //}
-                //else
-                //{
-                //    return Request.CreateResponse(HttpStatusCode.OK, listOfBooks.Result);
-                //}
+               
             }
             catch (Exception ex)
             {

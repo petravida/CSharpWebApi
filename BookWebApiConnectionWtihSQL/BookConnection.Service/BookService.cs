@@ -1,4 +1,5 @@
 ﻿using BookConnecion.Repository;
+using BookConnection.common;
 using BookConnection.Model;
 using BookConnection.Repository.common;
 using BookConnection.Service.common;
@@ -24,10 +25,10 @@ namespace BookConnection.Service
     
         
 
-        public async Task<List<BookModel>> GetBooksAsync()
+        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
         {
             //BookRepository bookRep = new BookRepository();
-            Task<List<BookModel>> books = Repository.GetBooksAsync();
+            Task<List<BookModel>> books = Repository.GetBooksAsync(pagination, sorting);
 
             return await books;
         }

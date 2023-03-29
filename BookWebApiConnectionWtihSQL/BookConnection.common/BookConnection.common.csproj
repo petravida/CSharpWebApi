@@ -79,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookCommon.cs" />
+    <Compile Include="Filtering.cs" />
+    <Compile Include="Sorting.cs" />
+    <Compile Include="Pagination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

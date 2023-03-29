@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using BookConnection.common;
 using BookConnection.Repository.common;
 using BookConnection.Model;
+using System.Web.Http;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
 
 namespace BookConnecion.Repository 
 {
@@ -20,13 +23,33 @@ namespace BookConnecion.Repository
         }
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
-        public async Task<List<BookModel>> GetBooksAsync()
+        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
         {
+            StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book ");
             SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand getAll = new SqlCommand("SELECT * FROM Book", connection);
+            SqlCommand getAll = new SqlCommand();
             List<BookModel> books = new List<BookModel>();
+            if (sorting != null)
+            {
+                stringBuilder.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder}");
+                getAll.Parameters.AddWithValue(sorting.SortBy, sorting.SortOrder);
+            }
+            else
+            {
+                stringBuilder.Append($"ORDER BY Id");
+            }
+
+            if (pagination != null)
+            {
+                stringBuilder.Append("OFFSET @OffsetCount ROWS FETCH NEXT @PageSize ROWS ONLY");
+                getAll.Parameters.AddWithValue("@OffsetCount", ((pagination.PageNumber - 1) * pagination.PageSize));
+                getAll.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+            }
+            getAll.CommandText = stringBuilder.ToString();
+            getAll.Connection = connection;
             connection.Open();
             SqlDataReader allreader = await getAll.ExecuteReaderAsync();
+            
             if (allreader.HasRows)
             {
                 while (allreader.Read())
@@ -41,6 +64,7 @@ namespace BookConnecion.Repository
                 }
                 allreader.Close();
             }
+           
             return books;
         }
 

@@ -1,4 +1,5 @@
-﻿using BookConnection.Model;
+﻿using BookConnection.common;
+using BookConnection.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BookConnection.Repository.common
 {
     public interface IBookRepository
     {
-        Task<List<BookModel>> GetBooksAsync();
+        Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting);
         Task<BookModel> GetOneBookAsync(Guid id);
         Task<bool> PostOneBookAsync(BookModel book);
         Task<bool> DeleteBookAsync(Guid id);

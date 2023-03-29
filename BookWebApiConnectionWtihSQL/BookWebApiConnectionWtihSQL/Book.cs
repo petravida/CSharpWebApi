@@ -14,6 +14,7 @@ namespace BookWebApiConnectionWtihSQL
         public string Genre { get; set; }   
         public Guid AuthorId { get; set; }
 
+        //Book Id
         //4FB26061-DF13-475F-8763-3DB3763337C9
         //982C8FCA-C2D5-44F7-8711-F6071742FCEF
     }
