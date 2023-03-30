@@ -40,7 +40,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         [HttpGet]
         [Route("api/Books")]
         //public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
-        public async Task<HttpResponseMessage> GetBooksAsync(int pageNumber, int pageSize, string sortBy, string sortOrder)
+        public async Task<HttpResponseMessage> GetBooksAsync(int pageNumber = 1, int pageSize = 5, string sortBy = "Id", string sortOrder = "Asc", string bookTitle = null, int numberofBookPages = 0, string bookGenre = null)
         {
             try
             {
@@ -55,25 +55,18 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                     SortBy = sortBy,
                     SortOrder = sortOrder
                 };
+                Filtering filtering = new Filtering
+                {
+                    BookGenre = bookGenre == null ? null : bookGenre,
+                    BookTitle = bookTitle == null ? null : bookTitle,
+                    NumberOfBookPages = numberofBookPages
+
+            };
                 //BookService bookService = new BookService();
 
-                List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting);
+                List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting, filtering);
                 List<BookGetRest> bookRestList = new List<BookGetRest>();
-                //Pagination newPagination = new Pagination();
-                //{
-                //    newPagination = pagination;
-                //    pagination.PageSize = newPagination.PageSize;
-                //    pagination.PageNumber = newPagination.PageNumber;
-
-                //}
-                //Sorting newsorting = new Sorting();
-                //{
-                //    newsorting = sorting;
-                //    sorting.SortBy = newsorting.SortBy;
-                //    sorting.SortOrder = newsorting.SortOrder;
-
-                //}
-
+                
                 if ( listOfBooks == null)
                 {
                     return  Request.CreateResponse(HttpStatusCode.NotFound);

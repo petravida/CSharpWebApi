@@ -10,7 +10,7 @@ namespace BookConnection.Repository.common
 {
     public interface IBookRepository
     {
-        Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting);
+        Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering);
         Task<BookModel> GetOneBookAsync(Guid id);
         Task<bool> PostOneBookAsync(BookModel book);
         Task<bool> DeleteBookAsync(Guid id);

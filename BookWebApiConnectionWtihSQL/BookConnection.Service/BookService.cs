@@ -25,10 +25,10 @@ namespace BookConnection.Service
     
         
 
-        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
+        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
         {
             //BookRepository bookRep = new BookRepository();
-            Task<List<BookModel>> books = Repository.GetBooksAsync(pagination, sorting);
+            Task<List<BookModel>> books = Repository.GetBooksAsync(pagination, sorting, filtering);
 
             return await books;
         }

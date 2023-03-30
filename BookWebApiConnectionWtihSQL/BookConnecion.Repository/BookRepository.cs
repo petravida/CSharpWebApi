@@ -24,13 +24,31 @@ namespace BookConnecion.Repository
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
         //public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
-        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
+        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
 
         {
-            StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book ");
+            StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book WHERE 1=1 ");
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand getAll = new SqlCommand();
             List<BookModel> books = new List<BookModel>();
+            if (filtering.BookGenre != null)
+            {
+                stringBuilder.Append($"AND Genre = @BookGenre ");
+                getAll.Parameters.AddWithValue("@BookGenre", filtering.BookGenre);
+            }
+          
+            if (filtering.BookTitle != null)
+            {
+                stringBuilder.Append($"AND Title like '%'+@BookTitle+'%' ");
+                getAll.Parameters.AddWithValue("@BookTitle", filtering.BookTitle);
+            }
+            
+            if (filtering != null)
+            {
+                stringBuilder.Append($"AND [Number of pages] > @NumberOfBookPages ");
+                getAll.Parameters.AddWithValue("@NumberOfBookPages", filtering.NumberOfBookPages);
+
+            }
             if (sorting != null)
             {
                 stringBuilder.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
@@ -43,7 +61,7 @@ namespace BookConnecion.Repository
 
             if (pagination != null)
             {
-                stringBuilder.Append("OFFSET @OffsetCount ROWS FETCH NEXT @PageSize ROWS ONLY");
+                stringBuilder.Append("OFFSET @OffsetCount ROWS FETCH NEXT @PageSize ROWS ONLY ");
                 getAll.Parameters.AddWithValue("@OffsetCount", ((pagination.PageNumber - 1) * pagination.PageSize));
                 getAll.Parameters.AddWithValue("@PageSize", pagination.PageSize);
             }

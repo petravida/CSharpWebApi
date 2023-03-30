@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace BookConnection.common
 {
-    internal class Filtering
+    public class Filtering
     {
+        public Guid AuthorId { get; set; }  
+        public int NumberOfBookPages { get; set; }  
+        public string BookGenre { get; set; }   
+        public string BookTitle  { get; set; }
     }
 }
