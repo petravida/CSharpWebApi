@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookRepository.cs" />
+    <Compile Include="EFBookRepository.cs" />
     <Compile Include="HttpGetAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteAttribute.cs" />
@@ -105,6 +106,10 @@
     <ProjectReference Include="..\BookConnection.Repository.common\BookConnection.Repository.common.csproj">
       <Project>{9f468c95-ec68-4073-a8ba-9c25e2bd242e}</Project>
       <Name>BookConnection.Repository.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\BookConnection.DAL.csproj">
+      <Project>{d2746870-6885-401a-b139-f8e1284ba688}</Project>
+      <Name>BookConnection.DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

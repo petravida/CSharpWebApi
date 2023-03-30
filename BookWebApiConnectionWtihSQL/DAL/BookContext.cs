@@ -18,7 +18,7 @@ namespace DAL
         public virtual DbSet<BookPublishingHouse> BookPublishingHouse { get; set; }
         public virtual DbSet<Boook> Boook { get; set; }
         public virtual DbSet<BoookPublishingHousee> BoookPublishingHousee { get; set; }
-        public virtual DbSet<proba> proba { get; set; }
+        //public virtual DbSet<proba> proba { get; set; }
         public virtual DbSet<PublishingHouse> PublishingHouse { get; set; }
         public virtual DbSet<PublishingHousee> PublishingHousee { get; set; }
         public virtual DbSet<State> State { get; set; }
@@ -88,13 +88,13 @@ namespace DAL
                 .HasForeignKey(e => e.Boook_Id)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<proba>()
-                .Property(e => e.Ime)
-                .IsUnicode(false);
+            //modelBuilder.Entity<proba>()
+            //    .Property(e => e.Ime)
+            //    .IsUnicode(false);
 
-            modelBuilder.Entity<proba>()
-                .Property(e => e.PRICE)
-                .HasPrecision(19, 4);
+            //modelBuilder.Entity<proba>()
+            //    .Property(e => e.PRICE)
+            //    .HasPrecision(19, 4);
 
             modelBuilder.Entity<PublishingHouse>()
                 .Property(e => e.Name)

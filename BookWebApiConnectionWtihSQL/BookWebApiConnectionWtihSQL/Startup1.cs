@@ -28,8 +28,9 @@ namespace BookWebApiConnectionWtihSQL
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<BookService>().As<IBookService>();
-            builder.RegisterType<BookRepository>().As<IBookRepository>();
+           // builder.RegisterType<BookRepository>().As<IBookRepository>();
             builder.RegisterType<BookController>();
+            builder.RegisterType<EFBookRepository>().As<IBookRepository>();
 
             IContainer container = builder.Build();
             HttpConfiguration config = GlobalConfiguration.Configuration;

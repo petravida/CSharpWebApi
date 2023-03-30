@@ -8,7 +8,7 @@
     <ProjectGuid>{D2746870-6885-401A-B139-F8E1284BA688}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DAL</RootNamespace>
+    <RootNamespace>BookConnection.DAL</RootNamespace>
     <AssemblyName>DAL</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -61,7 +61,6 @@
     <Compile Include="Boook.cs" />
     <Compile Include="BoookPublishingHousee.cs" />
     <Compile Include="BookDAL.cs" />
-    <Compile Include="proba.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishingHouse.cs" />
     <Compile Include="PublishingHousee.cs" />
@@ -71,6 +70,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookConnection.common\BookConnection.common.csproj">
+      <Project>{b8158dcc-8cdf-479f-9fc4-0eacffb31a1c}</Project>
+      <Name>BookConnection.common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

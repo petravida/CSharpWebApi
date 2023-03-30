@@ -57,11 +57,11 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 };
                 Filtering filtering = new Filtering
                 {
-                    BookGenre = bookGenre == null ? null : bookGenre,
-                    BookTitle = bookTitle == null ? null : bookTitle,
+                    BookGenre = bookGenre ?? null,
+                    BookTitle = bookTitle ?? null,
                     NumberOfBookPages = numberofBookPages
 
-            };
+                };
                 //BookService bookService = new BookService();
 
                 List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting, filtering);

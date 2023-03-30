@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.Model", "Boo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.common", "BookConnection.common\BookConnection.common.csproj", "{B8158DCC-8CDF-479F-9FC4-0EACFFB31A1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.Dal", "DAL\BookConnection.Dal.csproj", "{D2746870-6885-401A-B139-F8E1284BA688}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.DAL", "DAL\BookConnection.DAL.csproj", "{D2746870-6885-401A-B139-F8E1284BA688}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

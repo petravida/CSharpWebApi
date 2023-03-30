@@ -31,24 +31,28 @@ namespace BookConnecion.Repository
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand getAll = new SqlCommand();
             List<BookModel> books = new List<BookModel>();
-            if (filtering.BookGenre != null)
+           if (filtering != null)
             {
-                stringBuilder.Append($"AND Genre = @BookGenre ");
-                getAll.Parameters.AddWithValue("@BookGenre", filtering.BookGenre);
-            }
-          
-            if (filtering.BookTitle != null)
-            {
-                stringBuilder.Append($"AND Title like '%'+@BookTitle+'%' ");
-                getAll.Parameters.AddWithValue("@BookTitle", filtering.BookTitle);
+                if (filtering.BookGenre != null)
+                {
+                    stringBuilder.Append($"AND Genre = @BookGenre ");
+                    getAll.Parameters.AddWithValue("@BookGenre", filtering.BookGenre);
+                }
+
+                if (filtering.BookTitle != null)
+                {
+                    stringBuilder.Append($"AND Title like '%'+@BookTitle+'%' ");
+                    getAll.Parameters.AddWithValue("@BookTitle", filtering.BookTitle);
+                }
+
+                if (filtering != null)
+                {
+                    stringBuilder.Append($"AND [Number of pages] >= @NumberOfBookPages ");
+                    getAll.Parameters.AddWithValue("@NumberOfBookPages", filtering.NumberOfBookPages);
+
+                }
             }
             
-            if (filtering != null)
-            {
-                stringBuilder.Append($"AND [Number of pages] > @NumberOfBookPages ");
-                getAll.Parameters.AddWithValue("@NumberOfBookPages", filtering.NumberOfBookPages);
-
-            }
             if (sorting != null)
             {
                 stringBuilder.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
