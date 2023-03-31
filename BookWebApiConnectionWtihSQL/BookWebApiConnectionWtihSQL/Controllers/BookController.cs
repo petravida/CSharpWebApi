@@ -36,7 +36,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             Service = service;
         }
 
-        static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
+        //static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
         [HttpGet]
         [Route("api/Books")]
         //public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
@@ -64,7 +64,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 };
                 //BookService bookService = new BookService();
 
-                List<BookModel> listOfBooks = await Service.GetBooksAsync(pagination, sorting, filtering);
+                List<BookModelDTO> listOfBooks = await Service.GetBooksAsync(pagination, sorting, filtering);
                 List<BookGetRest> bookRestList = new List<BookGetRest>();
                 
                 if ( listOfBooks == null)
@@ -73,7 +73,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
                 }
                 else
                 {
-                    foreach (BookModel book in listOfBooks) 
+                    foreach (BookModelDTO book in listOfBooks) 
                     {
                         BookGetRest bookRest = new BookGetRest
                         {
@@ -100,7 +100,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 //BookService bookService = new BookService();
-                BookModel getBook = await Service.GetOneBookAsync(id);
+                BookModelDTO getBook = await Service.GetOneBookAsync(id);
                 if ( getBook == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"There is no Book with {id} Id.");
@@ -126,7 +126,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
             try
             {
                 //BookService bookService = new BookService();
-                BookModel insertedBook = new BookModel();
+                BookModelDTO insertedBook = new BookModelDTO();
                 insertedBook.Title = bookPost.Title;
                 insertedBook.NumberOfPages = bookPost.NumberOfPages;
                 insertedBook.Genre = bookPost.Genre;
@@ -180,7 +180,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         {
             try
             {
-                BookModel editBook = new BookModel();
+                BookModelDTO editBook = new BookModelDTO();
                 editBook.Title = bookPut.Title;
                 editBook.NumberOfPages = bookPut.NumberOfPages;
                 editBook.Genre = bookPut.Genre;

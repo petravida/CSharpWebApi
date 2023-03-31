@@ -25,10 +25,10 @@ namespace BookConnection.Service
     
         
 
-        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
+        public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
         {
             //BookRepository bookRep = new BookRepository();
-            Task<List<BookModel>> books = Repository.GetBooksAsync(pagination, sorting, filtering);
+            Task<List<BookModelDTO>> books = Repository.GetBooksAsync(pagination, sorting, filtering);
 
             return await books;
         }
@@ -36,13 +36,13 @@ namespace BookConnection.Service
         //{
         //    return true;
         //}
-        public async Task<BookModel> GetOneBookAsync(Guid id)
+        public async Task<BookModelDTO> GetOneBookAsync(Guid id)
         {
             //BookRepository getOneBook = new BookRepository();
-            Task<BookModel> oneBook = Repository.GetOneBookAsync(id);
+            Task<BookModelDTO> oneBook = Repository.GetOneBookAsync(id);
             return await oneBook;
         }
-        public async Task<bool> PostOneBookAsync(BookModel book)
+        public async Task<bool> PostOneBookAsync(BookModelDTO book)
         {
             //BookRepository postBook = new BookRepository();
             Task<bool> isInserted = Repository.PostOneBookAsync(book);
@@ -54,9 +54,9 @@ namespace BookConnection.Service
             Task<bool> isDeleted = Repository.DeleteBookAsync(id);
             return await isDeleted;
         }
-        public async Task<bool> PutBookAsync(Guid id, BookModel book)
+        public async Task<bool> PutBookAsync(Guid id, BookModelDTO book)
         {
-            BookModel findBook = await GetOneBookAsync(id);
+            BookModelDTO findBook = await GetOneBookAsync(id);
 
             if ( findBook == null)
             {
@@ -64,7 +64,7 @@ namespace BookConnection.Service
                return false;
             }
             
-           BookModel bookForUpdate = new BookModel();
+           BookModelDTO bookForUpdate = new BookModelDTO();
             bookForUpdate.Title = book.Title == default ? findBook.Title : book.Title;
            bookForUpdate.NumberOfPages = book.NumberOfPages == default ? findBook.NumberOfPages : book.NumberOfPages;
             bookForUpdate.Genre = book.Genre == default ? findBook.Genre : book.Genre;

@@ -24,13 +24,13 @@ namespace BookConnecion.Repository
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
         //public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
-        public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
+        public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
 
         {
             StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book WHERE 1=1 ");
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand getAll = new SqlCommand();
-            List<BookModel> books = new List<BookModel>();
+            List<BookModelDTO> books = new List<BookModelDTO>();
            if (filtering != null)
             {
                 if (filtering.BookGenre != null)
@@ -78,7 +78,7 @@ namespace BookConnecion.Repository
             {
                 while (allreader.Read())
                 {
-                    BookModel book = new BookModel();
+                    BookModelDTO book = new BookModelDTO();
                     book.Id = allreader.GetGuid(0);
                     book.Title = allreader.GetString(1);
                     book.NumberOfPages = allreader.GetInt32(2);
@@ -92,7 +92,7 @@ namespace BookConnecion.Repository
             return books;
         }
 
-        public async Task<BookModel> GetOneBookAsync(Guid id)
+        public async Task<BookModelDTO> GetOneBookAsync(Guid id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -101,7 +101,7 @@ namespace BookConnecion.Repository
                 getBook.Parameters.AddWithValue("@Id", id);
                 connection.Open();
                 SqlDataReader getReader = await getBook.ExecuteReaderAsync();
-                BookModel findBook = new BookModel();
+                BookModelDTO findBook = new BookModelDTO();
 
                 if (getReader.HasRows)
                 {
@@ -126,7 +126,7 @@ namespace BookConnecion.Repository
 
             }
         }
-        public async Task<bool> PostOneBookAsync(BookModel newBook)
+        public async Task<bool> PostOneBookAsync(BookModelDTO newBook)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -174,7 +174,7 @@ namespace BookConnecion.Repository
                 }
             }
         }
-        public async Task<bool> PutBookAsync(Guid id, BookModel updateBook)
+        public async Task<bool> PutBookAsync(Guid id, BookModelDTO updateBook)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             
