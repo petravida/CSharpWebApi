@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Web.Http.ModelBinding;
 using System.Data.Entity.Migrations;
+using System.Runtime.Remoting.Contexts;
+using System.Runtime.InteropServices;
+using System.Web.Http.Results;
+using System.Reflection;
 
 namespace BookConnecion.Repository
 {
@@ -23,28 +27,69 @@ namespace BookConnecion.Repository
 
         public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
         {
-            //if (pagination != null)
-            //{
-            //    var bookPagination = Context.Book.Skip((pagination.PageNumber - 1) * pagination.PageSize)
-            //        .Take(pagination.PageSize).ToListAsync();
-            //    var totalBook = await Context.Book.CountAsync();
-            //    return new List<BookModelDTO>(totalBook);
-
-            //}
-            List<BookModelDTO> booksList = new List<BookModelDTO>();
-            List<Book> allBooks = await Context.Book.ToListAsync();
-            foreach (var book in allBooks)
+            IQueryable<Book> query = Context.Book.AsQueryable();
+            if (filtering != null)
             {
-                booksList.Add(new BookModelDTO()
+                if (filtering.BookTitle != null)
                 {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Genre = book.Genre,
-                    NumberOfPages = book.Number_of_pages,
-                    AuthorId = book.Author_Id,
-                });
+                    query = query.Where(b => b.Title.Contains(filtering.BookTitle));
+                }
+                if (filtering.BookGenre != null)
+                {
+                    query = query.Where(b => b.Genre.Contains(filtering.BookGenre));
+                }
+                if (filtering.NumberOfBookPages > 0)
+                {
+                    query = query.Where(b => b.Number_of_pages >= filtering.NumberOfBookPages);
+                }
             }
+
+            if (sorting != null)
+            {
+                string sortBy = sorting.SortBy;
+                string sortOrder = sorting.SortOrder;
+
+                switch (sortBy.ToLower())
+                {
+                    case "title":
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Title) : query.OrderBy(b => b.Title);
+                        break;
+                    case "genre":
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Genre) : query.OrderBy(b => b.Genre);
+                        break;
+                    case "numberofpages":
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Number_of_pages) : query.OrderBy(b => b.Number_of_pages);
+                        break;
+                    default:
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id);
+                        break;
+
+                }
+
+            }
+            if (pagination != null)
+            {
+                int offsetCount = (pagination.PageNumber - 1) * pagination.PageSize;
+                int pageSize = pagination.PageSize;
+
+                query = query.OrderBy(b => b.Id).Skip(offsetCount).Take(pageSize);
+            }
+            List<Book> books = await query.ToListAsync();
+
+            if (books.Count == 0)
+            {
+                return null;
+            }
+            List<BookModelDTO> booksList = books.Select(b => new BookModelDTO
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Genre = b.Genre,
+                NumberOfPages = b.Number_of_pages,
+                AuthorId = b.Author_Id
+            }).ToList();
             return booksList;
+            
         }
 
         public async Task<BookModelDTO> GetOneBookAsync(Guid id)
