@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.common", "Bo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnection.DAL", "DAL\BookConnection.DAL.csproj", "{D2746870-6885-401A-B139-F8E1284BA688}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookConnectionMVC", "BookConnectionMVC\BookConnectionMVC.csproj", "{8F660B45-8440-46F4-A285-8E39023097A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{D2746870-6885-401A-B139-F8E1284BA688}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2746870-6885-401A-B139-F8E1284BA688}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2746870-6885-401A-B139-F8E1284BA688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F660B45-8440-46F4-A285-8E39023097A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F660B45-8440-46F4-A285-8E39023097A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F660B45-8440-46F4-A285-8E39023097A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F660B45-8440-46F4-A285-8E39023097A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

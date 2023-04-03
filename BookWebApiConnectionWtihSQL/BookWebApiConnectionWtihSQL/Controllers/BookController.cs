@@ -40,7 +40,7 @@ namespace BookWebApiConnectionWtihSQL.Controllers
         [HttpGet]
         [Route("api/Books")]
         //public async Task<HttpResponseMessage> GetBooksAsync(Pagination pagination, Sorting sorting)
-        public async Task<HttpResponseMessage> GetBooksAsync(int pageNumber = 1, int pageSize = 5, string sortBy = "Id", string sortOrder = "Asc", string bookTitle = null, int numberofBookPages = 0, string bookGenre = null)
+        public async Task<HttpResponseMessage> GetBooksAsync(int pageNumber = 1, int pageSize = 100, string sortBy = "Id", string sortOrder = "Asc", string bookTitle = null, int numberofBookPages = 0, string bookGenre = null)
         {
             try
             {

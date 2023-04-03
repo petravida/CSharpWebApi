@@ -14,6 +14,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Runtime.InteropServices;
 using System.Web.Http.Results;
 using System.Reflection;
+using System.Net.NetworkInformation;
 
 namespace BookConnecion.Repository
 {
@@ -28,6 +29,7 @@ namespace BookConnecion.Repository
         public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
         {
             IQueryable<Book> query = Context.Book.AsQueryable();
+            
             if (filtering != null)
             {
                 if (filtering.BookTitle != null)
@@ -43,37 +45,51 @@ namespace BookConnecion.Repository
                     query = query.Where(b => b.Number_of_pages >= filtering.NumberOfBookPages);
                 }
             }
-
-            if (sorting != null)
-            {
-                string sortBy = sorting.SortBy;
-                string sortOrder = sorting.SortOrder;
-
-                switch (sortBy.ToLower())
-                {
-                    case "title":
-                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Title) : query.OrderBy(b => b.Title);
-                        break;
-                    case "genre":
-                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Genre) : query.OrderBy(b => b.Genre);
-                        break;
-                    case "numberofpages":
-                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Number_of_pages) : query.OrderBy(b => b.Number_of_pages);
-                        break;
-                    default:
-                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id);
-                        break;
-
-                }
-
-            }
-            if (pagination != null)
+            if (pagination == null)
             {
                 int offsetCount = (pagination.PageNumber - 1) * pagination.PageSize;
                 int pageSize = pagination.PageSize;
 
                 query = query.OrderBy(b => b.Id).Skip(offsetCount).Take(pageSize);
+
             }
+            if (sorting != null)
+            {
+                string sortBy = sorting.SortBy;
+                string sortOrder = sorting.SortOrder;
+
+                int offsetCount = (pagination.PageNumber - 1) * pagination.PageSize;
+                int pageSize = pagination.PageSize;
+
+                switch (sortBy.ToLower())
+                {
+                    case "title":
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Title) : query.OrderBy(b => b.Title);
+                        if (pagination != null)
+                        {
+                            query = query.OrderBy(b => b.Title).Skip(offsetCount).Take(pageSize);
+                        }
+                        break;
+                    
+                    case "numberofpages":
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Number_of_pages) : query.OrderBy(b => b.Number_of_pages);
+                        if (pagination != null)
+                        {
+                            query = query.OrderBy(b => b.Number_of_pages).Skip(offsetCount).Take(pageSize);
+                        }
+                        break;
+                    default:
+                        query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id);
+                        if (pagination != null)
+                        {
+                            query = query.OrderBy(b => b.Id).Skip(offsetCount).Take(pageSize);
+                        }
+                        break;
+
+                }
+
+            }
+            
             List<Book> books = await query.ToListAsync();
 
             if (books.Count == 0)
