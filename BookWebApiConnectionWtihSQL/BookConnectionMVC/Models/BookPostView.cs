@@ -8,11 +8,11 @@ namespace BookConnectionMVC.Models
     public class BookPostView
     {
         private string genre;
-
+        //public Guid Id { get; set; }
         public string Title { get; set; }
         public int NumberOfPages { get; set; }
         public string Genre { get => genre; set => genre = value; }
         public Guid AuthorId { get; set; }
-        public string TypeOfLiterature { get; set; }
+        //public string TypeOfLiterature { get; set; }
     }
 }

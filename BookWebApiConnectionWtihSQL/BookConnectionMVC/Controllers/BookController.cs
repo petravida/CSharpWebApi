@@ -12,6 +12,7 @@ using BookConnection.common;
 using BookConnectionMVC.Models;
 using DAL;
 
+
 namespace BookConnectionMVC.Controllers
 {
     public class BookController : Controller
@@ -57,6 +58,7 @@ namespace BookConnectionMVC.Controllers
                     {
                         BookView booksList = new BookView
                         {
+                            Id = book.Id,
                             Title = book.Title,
                             NumberOfPages = book.NumberOfPages,
                             Genre = book.Genre
@@ -81,119 +83,101 @@ namespace BookConnectionMVC.Controllers
                 {
                     return View();
                 }
-                else
-                {
-                    BookView bookView = new BookView();
-                    bookView.Title = getBook.Title;
-                    bookView.NumberOfPages = getBook.NumberOfPages;
-                    bookView.Genre = getBook.Genre;
-                    return View(bookView);
-                }
+                BookView bookView = new BookView
+                { 
+                    Id = id,
+                    Title = getBook.Title,
+                    NumberOfPages = getBook.NumberOfPages,
+                    Genre = getBook.Genre,
+                };
+               
+                return View(bookView);
             }
             catch (Exception ex)
             {
                 return View(ex);
             }
         }
-        //public async Task<ActionResult> Delete(Guid id)
-        //{
-        //    try
-        //    {
-        //        bool isDeleted = await Service.DeleteBookAsync(id);
 
-        //        if (isDeleted == false)
-        //        {
-        //            return View();
-        //        }
-        //        else
-        //        {
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            try
+            {
+                bool isDeleted = await Service.DeleteBookAsync(id);
 
-        //            return RedirectToAction("GetBooksAsync");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return View(ex);
-        //    }
+                if (isDeleted == false)
+                {
+                    return View();
+                }
+                else
+                {
 
-        //}
-        //public async Task<ActionResult> PostOneBookAsync(BookPostView bookPost)
-        //{
-        //    try
-        //    {
+                    return RedirectToAction("GetBooksAsync");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
 
-        //        BookModelDTO insertedBook = new BookModelDTO();
-        //        insertedBook.Title = bookPost.Title;
-        //        insertedBook.NumberOfPages = bookPost.NumberOfPages;
-        //        insertedBook.Genre = bookPost.Genre;
-        //        insertedBook.AuthorId = bookPost.AuthorId;
-        //        insertedBook.TypeOfLiterature = bookPost.TypeOfLiterature;
-        //        bool isInserted = await Service.PostOneBookAsync(insertedBook);
-        //        if (isInserted == true)
-        //        {
-        //            return View(bookPost);
-        //        }
-        //        else
-        //        {
-        //            return View();
-        //        }
-        //    }
+        }
+        
+        public async Task<ActionResult> Edit(BookPutView bookForEdit)
+        {
+            try
+            {
+                BookModelDTO editBook = new BookModelDTO();
+                editBook.Id = bookForEdit.Id;
+                editBook.Title = bookForEdit.Title;
+                editBook.NumberOfPages = bookForEdit.NumberOfPages;
+                editBook.Genre = bookForEdit.Genre;
+                bool isUpdated = await Service.PutBookAsync(bookForEdit.Id, editBook);
 
-        //    catch (Exception ex)
-        //    {
-        //        return View(ex);
-        //    }
-        //}
-        //public async Task<ActionResult> Edit(Guid id)
-        //{
-        //    try
-        //    {
-        //        BookModelDTO getBook = await Service.GetOneBookAsync(id);
-        //        if (getBook == null)
-        //        {
-        //            return View();
-        //        }
-        //        else
-        //        {
-        //            BookView bookView = new BookView();
-        //            bookView.Title = getBook.Title;
-        //            bookView.NumberOfPages = getBook.NumberOfPages;
-        //            bookView.Genre = getBook.Genre;
-        //            return View(bookView);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return View(ex);
-        //    }
-        //}
-        //public async Task<ActionResult> PutBookAsync(Guid id, BookPutView bookPut)
-        //{
-        //    try
-        //    {
-        //        BookModelDTO editBook = new BookModelDTO();
-        //        editBook.Title = bookPut.Title;
-        //        editBook.NumberOfPages = bookPut.NumberOfPages;
-        //        editBook.Genre = bookPut.Genre;
-        //        bool isUpdated = await Service.PutBookAsync(id, editBook);
+                if (isUpdated == false)
+                {
+                    return View();
+                }
+                
+                return View(bookForEdit);
+                 
+            }
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
+        }
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
 
-        //        if (isUpdated == false)
-        //        {
-        //            return View("There is no book with {id} Id");
-        //        }
+        [HttpPost]
+        public async Task<ActionResult> Create(BookPostView newBook)
+        {
+            try
+            {
+                BookModelDTO insertedBook = new BookModelDTO();
+                insertedBook.Title = newBook.Title;
+                insertedBook.NumberOfPages = newBook.NumberOfPages;
+                insertedBook.Genre = newBook.Genre;
+                insertedBook.AuthorId = newBook.AuthorId;
+                bool isInserted = await Service.PostOneBookAsync(insertedBook);
+                if (isInserted == true)
+                {
+                    return RedirectToAction("GetBooksAsync");
+                }
+                else
+                {
+                    return View();
+                }
+            }
 
-        //        return View("Book is updated.");
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
+        }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return View(ex);
-        //    }
-        //}
-        // GET: Book
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
     }
 }

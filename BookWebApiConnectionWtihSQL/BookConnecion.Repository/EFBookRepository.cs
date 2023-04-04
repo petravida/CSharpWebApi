@@ -110,11 +110,12 @@ namespace BookConnecion.Repository
 
         public async Task<BookModelDTO> GetOneBookAsync(Guid id)
         {
+            Book book = new Book();
+            book = await Context.Book.Where(b => b.Id == id).FirstOrDefaultAsync();
             BookModelDTO findedBook = new BookModelDTO();
-            Book book = await Context.Book.FirstOrDefaultAsync(b => b.Id == id);
-            if (id != null)
+            if (book != null)
             {
-                findedBook.Id = book.Id;
+                findedBook.Id = id;
                 findedBook.Title = book.Title;
                 findedBook.Genre = book.Genre;
                 findedBook.NumberOfPages = book.Number_of_pages;
