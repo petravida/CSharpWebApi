@@ -11,7 +11,7 @@ using BookConnection.Service.common;
 using BookConnection.common;
 using BookConnectionMVC.Models;
 using DAL;
-
+using PagedList;
 
 namespace BookConnectionMVC.Controllers
 {
@@ -23,21 +23,42 @@ namespace BookConnectionMVC.Controllers
         {
             Service = service;
         }
-        public async Task<ActionResult> GetBooksAsync(int pageNumber = 1, int pageSize = 100, string sortBy = "Id", string sortOrder = "Asc", string bookTitle = null, int numberofBookPages = 0, string bookGenre = null)
+        public async Task<ActionResult> GetBooksAsync(string searchString, int pageNumber = 1, int pageSize = 3, string sortBy = "Id", string sortOrder = "Desc", string bookTitle = null, int numberofBookPages = 0, string bookGenre = null)
         {
             try
             {
+
+                if (ViewBag.SearchString != searchString)
+                {
+                    ViewBag.SearchString = searchString;
+
+                }
+                //pageNumber = @ViewBag.PageNumber == 1 ? 1 : pageNumber;
+                var hasPage = @ViewBag.HasNextPage;
+                //pageNumber = hasPage == true ? pageNumber : 1;
+                ViewBag.SortOrder = sortOrder;
+                ViewBag.SortBy = sortBy;
+                //ViewBag.SearchString = searchString;
+
+                List<BookView> booksMappedList = new List<BookView>();
+                SearchString search = new SearchString
+                {
+                    SearchQueary = searchString
+                };
+                
+
                 Pagination pagination = new Pagination
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize
                 };
-
+                
                 Sorting sorting = new Sorting
                 {
                     SortBy = sortBy,
                     SortOrder = sortOrder
                 };
+
                 Filtering filtering = new Filtering
                 {
                     BookGenre = bookGenre ?? null,
@@ -45,8 +66,20 @@ namespace BookConnectionMVC.Controllers
                     NumberOfBookPages = numberofBookPages
 
                 };
-                List<BookModelDTO> listOfBooks = await Service.GetBooksAsync(pagination, sorting, filtering);
-                List<BookView> booksMappedList = new List<BookView>();
+
+                IPagedList<BookModelDTO> pagedBooks = await Service.GetBooksAsync(search, pagination, sorting, filtering);
+
+                List<BookModelDTO> listOfBooks = pagedBooks.ToList();
+                ViewBag.HasNextPage = pagedBooks.HasNextPage;
+                pageNumber = ViewBag.HasNextPage == true ? pageNumber : 1;
+                ViewBag.PageNumber = pageNumber;
+                //pagination = new Pagination
+                //{
+                //    PageNumber = pageNumber,
+                //    PageSize = pageSize
+                //};
+
+                //pagedBooks = await Service.GetBooksAsync(search, pagination, sorting, filtering);
 
                 if (listOfBooks == null)
                 {
@@ -64,10 +97,13 @@ namespace BookConnectionMVC.Controllers
                             Genre = book.Genre
                         };
                         booksMappedList.Add(booksList);
-
+                        
                     }
-                    return View(booksMappedList);
                 }
+       
+                return View(booksMappedList);
+
+
             }
             catch (Exception ex)
             {

@@ -3,6 +3,7 @@ using BookConnection.common;
 using BookConnection.Model;
 using BookConnection.Repository.common;
 using BookConnection.Service.common;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +26,11 @@ namespace BookConnection.Service
     
         
 
-        public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
+        public async Task<IPagedList<BookModelDTO>> GetBooksAsync(SearchString searchString, Pagination pagination, Sorting sorting, Filtering filtering)
         {
             //BookRepository bookRep = new BookRepository();
-            Task<List<BookModelDTO>> books = Repository.GetBooksAsync(pagination, sorting, filtering);
+            return await Repository.GetBooksAsync( searchString, pagination, sorting, filtering);
 
-            return await books;
         }
         //public bool Save(BookModel book)
         //{

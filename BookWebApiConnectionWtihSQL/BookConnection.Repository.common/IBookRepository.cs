@@ -1,5 +1,6 @@
 ﻿using BookConnection.common;
 using BookConnection.Model;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BookConnection.Repository.common
 {
     public interface IBookRepository
     {
-        Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering);
+        Task<IPagedList<BookModelDTO>> GetBooksAsync(SearchString searchString, Pagination pagination, Sorting sorting, Filtering filtering);
         Task<BookModelDTO> GetOneBookAsync(Guid id);
         Task<bool> PostOneBookAsync(BookModelDTO book);
         Task<bool> DeleteBookAsync(Guid id);

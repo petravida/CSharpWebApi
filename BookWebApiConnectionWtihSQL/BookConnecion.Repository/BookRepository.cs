@@ -12,10 +12,11 @@ using BookConnection.Model;
 using System.Web.Http;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text.RegularExpressions;
+using PagedList;
 
 namespace BookConnecion.Repository 
 {
-    public class BookRepository : IBookRepository
+    public class BookRepository /*: IBookRepository*/
     {
         public BookRepository()
         {
@@ -24,7 +25,7 @@ namespace BookConnecion.Repository
         static string connectionString = "Data Source=LAPTOP-PT3M9TGC;Initial Catalog=Books;Integrated Security=True";
 
         //public async Task<List<BookModel>> GetBooksAsync(Pagination pagination, Sorting sorting)
-        public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
+        public async Task<List<BookModelDTO>> GetBooksAsync(SearchString searchString, Pagination pagination, Sorting sorting, Filtering filtering)
 
         {
             StringBuilder stringBuilder = new StringBuilder("SELECT * FROM Book WHERE 1=1 ");

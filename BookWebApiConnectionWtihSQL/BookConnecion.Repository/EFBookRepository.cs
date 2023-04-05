@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Web.Http.Results;
 using System.Reflection;
 using System.Net.NetworkInformation;
+using PagedList;
 
 namespace BookConnecion.Repository
 {
@@ -26,10 +27,11 @@ namespace BookConnecion.Repository
             Context = contex;
         }
 
-        public async Task<List<BookModelDTO>> GetBooksAsync(Pagination pagination, Sorting sorting, Filtering filtering)
+        public async Task<IPagedList<BookModelDTO>> GetBooksAsync(SearchString searchString, Pagination pagination, Sorting sorting, Filtering filtering)
         {
             IQueryable<Book> query = Context.Book.AsQueryable();
-            
+            //int pageNumber = (pagination.PageNumber ?? 1);
+
             if (filtering != null)
             {
                 if (filtering.BookTitle != null)
@@ -45,19 +47,23 @@ namespace BookConnecion.Repository
                     query = query.Where(b => b.Number_of_pages >= filtering.NumberOfBookPages);
                 }
             }
+            if (!String.IsNullOrEmpty(searchString.SearchQueary))
+            {
+                string searchQuery = searchString.SearchQueary.ToLower();
+                query = query.Where(b => b.Title.Contains(searchQuery));
+
+            }
             if (pagination == null)
             {
                 int offsetCount = (pagination.PageNumber - 1) * pagination.PageSize;
                 int pageSize = pagination.PageSize;
 
                 query = query.OrderBy(b => b.Id).Skip(offsetCount).Take(pageSize);
-
             }
             if (sorting != null)
             {
                 string sortBy = sorting.SortBy;
                 string sortOrder = sorting.SortOrder;
-
                 int offsetCount = (pagination.PageNumber - 1) * pagination.PageSize;
                 int pageSize = pagination.PageSize;
 
@@ -69,8 +75,7 @@ namespace BookConnecion.Repository
                         {
                             query = query.OrderBy(b => b.Title).Skip(offsetCount).Take(pageSize);
                         }
-                        break;
-                    
+                        break;   
                     case "numberofpages":
                         query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Number_of_pages) : query.OrderBy(b => b.Number_of_pages);
                         if (pagination != null)
@@ -80,32 +85,25 @@ namespace BookConnecion.Repository
                         break;
                     default:
                         query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id);
-                        if (pagination != null)
-                        {
-                            query = query.OrderBy(b => b.Id).Skip(offsetCount).Take(pageSize);
-                        }
+             
                         break;
-
                 }
-
             }
             
-            List<Book> books = await query.ToListAsync();
-
-            if (books.Count == 0)
+            if (query.Count() == 0)
             {
                 return null;
             }
-            List<BookModelDTO> booksList = books.Select(b => new BookModelDTO
+            IQueryable<BookModelDTO> books = query.Select(b => new BookModelDTO
             {
                 Id = b.Id,
                 Title = b.Title,
                 Genre = b.Genre,
                 NumberOfPages = b.Number_of_pages,
                 AuthorId = b.Author_Id
-            }).ToList();
-            return booksList;
+            });
             
+            return books.ToPagedList(pagination.PageNumber, pagination.PageSize);
         }
 
         public async Task<BookModelDTO> GetOneBookAsync(Guid id)
